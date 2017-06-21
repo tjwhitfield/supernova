@@ -20,7 +20,8 @@ function addZeroes(count, max) {
 
 function displayDiff(millis) {
   var time = new Date(millis);
-  var hr = addZeroes(time.getUTCHours(), 2); // getUTCHours() to convert ms to a time indep. of time zone
+  // getUTCHours() to convert ms to a time indep. of time zone
+  var hr = addZeroes(time.getUTCHours(), 2);
   var min = addZeroes(time.getUTCMinutes(), 2);
   var sec = addZeroes(time.getUTCSeconds(), 2);
   var diff = hr + ":" + min + ":" + sec;
@@ -31,14 +32,40 @@ function Message(props) {
   return <h3>Greetings, {props.name}!</h3>;
 }
 
-class Excuse extends React.Component {
+class Response extends React.Component {
+
   render() {
-    return (
-      <div>
-        <p>By the way, I'm pretty sure {this.props.instigator} left some spilled milk on {this.props.victim}'s time machine, which may be a problem according to {this.props.boss.lastname}...</p>
+    const isTentative = this.props.tentative;
+    if (isTentative) {
+      return (
         <p>Anyway, try to get this cleaned before {this.props.deadline}!</p>
-      </div>
-    );
+      );
+    } else {
+      return null;
+    }
+  }
+}
+
+class Issue extends React.Component {
+
+  render() {
+    const isHappy = this.props.happy;
+    let footnote = null;
+    if (isHappy) {
+      footnote = <p><i>By the way, this app was created using ReactJS,
+        which is pretty cool.</i></p>
+    }
+    const isTentative = this.props.tentative;
+      return (
+        <div>
+          <p>I'm pretty sure {this.props.instigator} left some spilled milk on
+            {this.props.victim}'s time machine, which may be a problem according
+            to {this.props.boss.lastname}...</p>
+          <Response tentative={this.props.tentative}
+            deadline={this.props.deadline} />
+          {footnote}
+        </div>
+      );
   }
 }
 
@@ -52,73 +79,119 @@ function Boss(first, last) {
 }
 
 class Timer extends React.Component {
+
   constructor(props) {
     super(props);
     var nowInit = new Date();
     this.state = {
       now: nowInit,
-      midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(), nowInit.getDate() + 1, 0, 0, 0, 0),
+      midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(),
+        nowInit.getDate() + 1, 0, 0, 0, 0),
       counter: 0,
       counter2: 0
     };
   }
+
   tick() {
     var nowInit = new Date();
     this.setState(
       (prevState) => ({
         now: nowInit,
-        midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(), nowInit.getDate() + 1, 0, 0, 0, 0),
+        midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(),
+          nowInit.getDate() + 1, 0, 0, 0, 0),
         counter: prevState.counter + 1
       })
     );
   }
+
   componentDidMount() {
-    this.timerID = setInterval(
+    this.fastCount = setInterval(
       () => this.tick(),
       1000
     );
-    this.evenID = setInterval(
+    this.slowCount = setInterval(
       () => this.setState(
         (prevState) => ({
-          counter2: prevState.counter2 + 2
+          counter2: prevState.counter2 + 10
         })
       ),
       10000
     );
   }
+
   componentWillUnmount() {
-    clearInterval(this.timerID);
+    clearInterval(this.fastCount);
+    clearInterval(this.slowCount);
   }
+
   render() {
     return (
-      <div>
-        <p className="App-intro">
-          Countdown till blast-off!
-        </p>
+      <div className="App-intro">
+        <p>Countdown till blast-off!</p>
         <h1>{displayDiff(getDiff(this.state.now, this.state.midnight))}</h1>
-        <h3>Count Evermonde: {this.state.counter}</h3>
-        <h3>Count Even: {this.state.counter2}</h3>
+        <h3>Count Fast: {this.state.counter}</h3>
+        <h3>Count Slow: {this.state.counter2}</h3>
       </div>
     );
   }
 }
 
-class App extends Component {
+class Protected extends React.Component {
+
   render() {
+    const content = (
+      <div className="Protected-content">
+        <Timer />
+        <Message name="Jorgensen" />
+        <Issue boss={Boss("George", "Hill")} instigator="Bobby" victim="Michael"
+          tentative={true} deadline="Friday" happy={true} />
+      </div>
+    );
+    return content;
+  }
+}
+
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false
+    };
+  }
+
+  authHandler = (prevState) => {
+    this.setState(
+      (prevState) => ({
+        loggedIn: !prevState.loggedIn
+      })
+    );
+  }
+
+  render() {
+    let protectedContent = null;
+    let authButtonText = "Log In";
+    if (this.state.loggedIn) {
+      protectedContent = <Protected />
+      authButtonText = "Log Out";
+    }
     const page = (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <div>
+            <img src={logo} className="App-logo" alt="logo" />
+            <h2>Welcome to React</h2>
+            <button className="Auth"
+              onClick={this.authHandler}>{authButtonText}</button>
+          </div>
+          <div>
+
+          </div>
         </div>
-        <Timer />
-        <Message name="Jorgensen" />
-        <Excuse boss={Boss("George", "Hill")} instigator="Bobby" victim="Michael" deadline="Friday" />
+        {protectedContent}
       </div>
     );
-    return (
-      page
-    );
+    return page;
   }
 }
 
