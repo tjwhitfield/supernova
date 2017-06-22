@@ -266,6 +266,30 @@ class Login extends React.Component {
   }
 }
 
+class Auth extends React.Component {
+
+  handleClick = () => {
+    console.log("transferring control to parent");
+    this.props.handleClick();
+  }
+
+  render() {
+    let authButtonText = null;
+    if (this.props.loggedIn) {
+      authButtonText = "Log Out";
+    } else {
+      authButtonText = "Log In";
+    }
+    const content = (
+      <div className="Auth">
+        <button
+          onClick={this.handleClick}>{authButtonText}</button>
+      </div>
+    );
+    return content;
+  }
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -277,11 +301,19 @@ class App extends Component {
   }
 
   handleAuthButtonClick = (prevState) => {
-    this.setState(
-      (prevState) => ({
-        attemptingLogIn: !prevState.attemptingLogIn
-      })
-    );
+    console.log("parent taking control!");
+    if (this.state.loggedIn) {
+      this.setState({
+        loggedIn: false,
+        attemptingLogIn: false
+      });
+    } else {
+      if (!this.state.attemptingLogIn) {
+        this.setState({
+          attemptingLogIn: true
+        });
+      }
+    }
   }
 
   handleAuthResult = (authResult) => {
@@ -306,13 +338,10 @@ class App extends Component {
 
   render() {
     let content = null;
-    let authButtonText = null;
     if (this.state.loggedIn) {
       content = <Protected />;
-      authButtonText = "Log Out";
     } else {
       content = <Unprotected />;
-      authButtonText = "Log In";
     }
     let dialog = null;
     if (this.state.attemptingLogIn) {
@@ -321,10 +350,8 @@ class App extends Component {
     const page = (
       <div className="App">
         <div className="App-header">
-            <div className="Auth">
-              <button
-                onClick={this.handleAuthButtonClick}>{authButtonText}</button>
-            </div>
+            <Auth loggedIn={this.state.loggedIn}
+              handleClick={this.handleAuthButtonClick} />
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to React</h2>
         </div>
