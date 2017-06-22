@@ -186,14 +186,15 @@ class Protected extends React.Component {
   }
 }
 
-class Login extends React.Component {
+class LoginDialog extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       UsernameEntry: null,
       PasswordEntry: null,
-      loggedIn: false
+      loggedIn: false,
+      hasFailed: false
     };
   }
 
@@ -218,7 +219,6 @@ class Login extends React.Component {
 
   handleCancel = () => {
     const isSuccess = null;
-    console.log("setting isSuccess to " + isSuccess);
     this.processLogInResult(isSuccess);
   }
 
@@ -226,8 +226,12 @@ class Login extends React.Component {
     const isSuccess = this.isValidLogIn(
       this.state.UsernameEntry,
       this.state.PasswordEntry);
-      console.log("setting isSuccess to " + isSuccess);
     this.processLogInResult(isSuccess);
+    if (!isSuccess) {
+      this.setState({
+        hasFailed: true
+      });
+    }
   }
 
   handleSubmit = (event) => {
@@ -236,6 +240,10 @@ class Login extends React.Component {
 
   render() {
     let content = null;
+    let message = null;
+    if (this.state.hasFailed) {
+      message = <p>Get out!</p>;
+    }
     if (!this.state.loggedIn) {
       content = (
         <div className="Login">
@@ -259,6 +267,7 @@ class Login extends React.Component {
                 value="Log In" onClick={this.handleLogIn} />
             </div>
           </form>
+          {message}
         </div>
       );
     }
@@ -269,7 +278,6 @@ class Login extends React.Component {
 class Auth extends React.Component {
 
   handleClick = () => {
-    console.log("transferring control to parent");
     this.props.handleClick();
   }
 
@@ -301,7 +309,6 @@ class App extends Component {
   }
 
   handleAuthButtonClick = (prevState) => {
-    console.log("parent taking control!");
     if (this.state.loggedIn) {
       this.setState({
         loggedIn: false,
@@ -318,18 +325,14 @@ class App extends Component {
 
   handleAuthResult = (authResult) => {
     if (authResult != null) {
-      console.log("App senses Log In");
       if (authResult) {
         this.setState({
           loggedIn: true,
           attemptingLogIn: false
         });
-        console.log("Good attempt");
       } else {
-        console.log("Bad attempt");
       }
     } else {
-      console.log("App senses Cancel");
       this.setState({
         attemptingLogIn: false
       });
@@ -338,14 +341,14 @@ class App extends Component {
 
   render() {
     let content = null;
+    let dialog = null;
     if (this.state.loggedIn) {
       content = <Protected />;
     } else {
       content = <Unprotected />;
-    }
-    let dialog = null;
-    if (this.state.attemptingLogIn) {
-      dialog = <Login authResultHandler={this.handleAuthResult} />;
+      if (this.state.attemptingLogIn) {
+        dialog = <LoginDialog authResultHandler={this.handleAuthResult} />;
+      }
     }
     const page = (
       <div className="App">
