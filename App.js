@@ -46,6 +46,15 @@ class Response extends React.Component {
   }
 }
 
+function Boss(first, last) {
+  return (
+    {
+      firstname: first,
+      lastname: last
+    }
+  );
+}
+
 class Issue extends React.Component {
 
   render() {
@@ -67,15 +76,6 @@ class Issue extends React.Component {
         </div>
       );
   }
-}
-
-function Boss(first, last) {
-  return (
-    {
-      firstname: first,
-      lastname: last
-    }
-  );
 }
 
 class Timer extends React.Component {
@@ -136,6 +136,41 @@ class Timer extends React.Component {
   }
 }
 
+class NumberList extends React.Component {
+
+  render() {
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+      11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+      31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+      41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
+    const numberList = numbers.map(
+      (number) =>
+        <li key={number.toString()}>
+          This is silly line #{number * this.props.interval}.
+        </li>
+    );
+    const content = (
+      <div>
+        {numberList}
+      </div>
+    );
+    return content;
+  }
+}
+
+class Unprotected extends React.Component {
+
+  render() {
+    const content = (
+      <div>
+        <p><i>Please log in to continue.</i></p>
+      </div>
+    );
+    return content;
+  }
+}
+
 class Protected extends React.Component {
 
   render() {
@@ -145,56 +180,7 @@ class Protected extends React.Component {
         <Message name="Jorgensen" />
         <Issue boss={Boss("George", "Hill")} instigator="Bobby" victim="Michael"
           tentative={true} deadline="Friday" happy={true} />
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
-        <p>Take up space...</p>
+        <NumberList interval={2} />
       </div>
     );
     return content;
@@ -219,11 +205,14 @@ class App extends Component {
   }
 
   render() {
-    let protectedContent = null;
-    let authButtonText = "Log In";
+    let content = null;
+    let authButtonText = null;
     if (this.state.loggedIn) {
-      protectedContent = <Protected />
+      content = <Protected />;
       authButtonText = "Log Out";
+    } else {
+      content = <Unprotected />;
+      authButtonText = "Log In";
     }
     const page = (
       <div className="App">
@@ -235,7 +224,7 @@ class App extends Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to React</h2>
         </div>
-        {protectedContent}
+        {content}
       </div>
     );
     return page;
