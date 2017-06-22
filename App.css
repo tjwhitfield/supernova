@@ -35,6 +35,32 @@
   color: white;
 }
 
+.Login {
+  position: fixed;
+  width: 360px;
+  height: 220px;
+  left: 40%;
+  top: 35%;
+  padding: 20px;
+  background-color: tan;
+  box-shadow: 4px 4px grey;
+}
+
+.Dialog-row {
+  position: relative;
+  height: 30px;
+}
+
+.Dialog-left {
+  position: absolute;
+  left: 0px;
+}
+
+.Dialog-right {
+  position: absolute;
+  right: 0px;
+}
+
 .App-intro {
   font-size: large;
 }

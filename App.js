@@ -187,19 +187,84 @@ class Protected extends React.Component {
   }
 }
 
+class Login extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: null,
+      password: null,
+      loggedIn: false
+    };
+  }
+
+  handleChange = (event) => {
+    const targetName = event.target.name;
+    const targetValue = event.target.value;
+    this.setState({
+      [targetName]: targetValue
+    });
+  }
+
+  isValidLogIn = (username, password) => {
+    return ((username == 'Tim') && (password == 'secret'));
+  }
+
+  handleSubmit = (event) => {
+    if (this.isValidLogIn(
+      this.state.username,
+      this.state.password)
+    ) {
+      this.setState({
+        loggedIn: true
+      });
+    }
+    event.preventDefault();
+  }
+
+  render() {
+    let content = null;
+    if (!this.state.loggedIn) {
+      content = (
+        <div className="Login">
+          <h2>Log In</h2>
+          <form onSubmit={this.handleSubmit}>
+            <div className="Dialog-row">
+              <span className="Dialog-left">Username: </span>
+              <input type="text" name="UsernameEntry" className="Dialog-right"
+                onChange={this.handleChange} />
+            </div>
+            <div className="Dialog-row">
+              <span className="Dialog-left">Password: </span>
+              <input type="password" name="PasswordEntry"
+                className="Dialog-right" onChange={this.handleChange} />
+            </div>
+            <div className="Dialog-row"></div>
+            <div className="Dialog-row">
+              <input type="submit" className="Dialog-right" value="Log In" />
+            </div>
+          </form>
+        </div>
+      );
+    }
+    return content;
+  }
+}
+
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false
+      loggedIn: false,
+      attemptingLogIn: false
     };
   }
 
-  authHandler = (prevState) => {
+  clickLogInHandler = (prevState) => {
     this.setState(
       (prevState) => ({
-        loggedIn: !prevState.loggedIn
+        attemptingLogIn: !prevState.attemptingLogIn
       })
     );
   }
@@ -214,17 +279,22 @@ class App extends Component {
       content = <Unprotected />;
       authButtonText = "Log In";
     }
+    let dialog = null;
+    if (this.state.attemptingLogIn) {
+      dialog = <Login />;
+    }
     const page = (
       <div className="App">
         <div className="App-header">
             <div className="Auth">
               <button
-                onClick={this.authHandler}>{authButtonText}</button>
+                onClick={this.clickLogInHandler}>{authButtonText}</button>
             </div>
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to React</h2>
         </div>
         {content}
+        {dialog}
       </div>
     );
     return page;
