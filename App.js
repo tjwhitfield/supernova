@@ -64,17 +64,16 @@ class Issue extends React.Component {
       footnote = <p><i>By the way, this app was created using ReactJS,
         which is pretty cool.</i></p>
     }
-    const isTentative = this.props.tentative;
-      return (
-        <div>
-          <p>I'm pretty sure {this.props.instigator} left some spilled milk on
-            {this.props.victim}'s time machine, which may be a problem according
-            to {this.props.boss.lastname}...</p>
-          <Response tentative={this.props.tentative}
-            deadline={this.props.deadline} />
-          {footnote}
-        </div>
-      );
+    return (
+      <div>
+        <p>I'm pretty sure {this.props.instigator} left some spilled milk on
+          {this.props.victim}'s time machine, which may be a problem according
+          to {this.props.boss.lastname}...</p>
+        <Response tentative={this.props.tentative}
+          deadline={this.props.deadline} />
+        {footnote}
+      </div>
+    );
   }
 }
 
@@ -192,8 +191,8 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: null,
-      password: null,
+      UsernameEntry: null,
+      PasswordEntry: null,
       loggedIn: false
     };
   }
@@ -207,18 +206,31 @@ class Login extends React.Component {
   }
 
   isValidLogIn = (username, password) => {
-    return ((username == 'Tim') && (password == 'secret'));
+    return ((username === 'Tim') && (password === 'secret'));
+  }
+
+  processLogInResult = (isSuccess) => {
+    this.props.authResultHandler(isSuccess);
+    this.setState({
+      loggedIn: isSuccess
+    });
+  }
+
+  handleCancel = () => {
+    const isSuccess = null;
+    console.log("setting isSuccess to " + isSuccess);
+    this.processLogInResult(isSuccess);
+  }
+
+  handleLogIn = () => {
+    const isSuccess = this.isValidLogIn(
+      this.state.UsernameEntry,
+      this.state.PasswordEntry);
+      console.log("setting isSuccess to " + isSuccess);
+    this.processLogInResult(isSuccess);
   }
 
   handleSubmit = (event) => {
-    if (this.isValidLogIn(
-      this.state.username,
-      this.state.password)
-    ) {
-      this.setState({
-        loggedIn: true
-      });
-    }
     event.preventDefault();
   }
 
@@ -241,7 +253,10 @@ class Login extends React.Component {
             </div>
             <div className="Dialog-row"></div>
             <div className="Dialog-row">
-              <input type="submit" className="Dialog-right" value="Log In" />
+              <input type="submit" name="CancelButton" className="Dialog-left"
+                value="Cancel" onClick={this.handleCancel} />
+              <input type="submit" name="LogInButton" className="Dialog-right"
+                value="Log In" onClick={this.handleLogIn} />
             </div>
           </form>
         </div>
@@ -261,12 +276,32 @@ class App extends Component {
     };
   }
 
-  clickLogInHandler = (prevState) => {
+  handleAuthButtonClick = (prevState) => {
     this.setState(
       (prevState) => ({
         attemptingLogIn: !prevState.attemptingLogIn
       })
     );
+  }
+
+  handleAuthResult = (authResult) => {
+    if (authResult != null) {
+      console.log("App senses Log In");
+      if (authResult) {
+        this.setState({
+          loggedIn: true,
+          attemptingLogIn: false
+        });
+        console.log("Good attempt");
+      } else {
+        console.log("Bad attempt");
+      }
+    } else {
+      console.log("App senses Cancel");
+      this.setState({
+        attemptingLogIn: false
+      });
+    }
   }
 
   render() {
@@ -281,14 +316,14 @@ class App extends Component {
     }
     let dialog = null;
     if (this.state.attemptingLogIn) {
-      dialog = <Login />;
+      dialog = <Login authResultHandler={this.handleAuthResult} />;
     }
     const page = (
       <div className="App">
         <div className="App-header">
             <div className="Auth">
               <button
-                onClick={this.clickLogInHandler}>{authButtonText}</button>
+                onClick={this.handleAuthButtonClick}>{authButtonText}</button>
             </div>
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to React</h2>
