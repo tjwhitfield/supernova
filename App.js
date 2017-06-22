@@ -145,6 +145,56 @@ class Protected extends React.Component {
         <Message name="Jorgensen" />
         <Issue boss={Boss("George", "Hill")} instigator="Bobby" victim="Michael"
           tentative={true} deadline="Friday" happy={true} />
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
+        <p>Take up space...</p>
       </div>
     );
     return content;
@@ -178,15 +228,12 @@ class App extends Component {
     const page = (
       <div className="App">
         <div className="App-header">
-          <div>
+            <div className="Auth">
+              <button
+                onClick={this.authHandler}>{authButtonText}</button>
+            </div>
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to React</h2>
-            <button className="Auth"
-              onClick={this.authHandler}>{authButtonText}</button>
-          </div>
-          <div>
-
-          </div>
         </div>
         {protectedContent}
       </div>
