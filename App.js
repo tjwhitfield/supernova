@@ -77,50 +77,63 @@ class Issue extends React.Component {
   }
 }
 
+class Counter extends React.Component {
+
+  getCountToDisplay = () => {
+    const countToDisplay = this.props.count -
+      (this.props.count % this.props.interval);
+    return countToDisplay;
+  }
+
+  render() {
+    const content = (
+      <div>
+        <h3>{this.getCountToDisplay()}</h3>
+      </div>
+    );
+    return content;
+  }
+}
+
 class Timer extends React.Component {
 
   constructor(props) {
     super(props);
-    var nowInit = new Date();
+    const nowInit = new Date();
     this.state = {
       now: nowInit,
-      midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(),
-        nowInit.getDate() + 1, 0, 0, 0, 0),
-      counter: 0,
-      counter2: 0
+      midnight: this.getMidnight(),
+      count: 0
     };
   }
 
-  tick() {
-    var nowInit = new Date();
+  getMidnight = () => {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(),
+      now.getDate() + 1, 0, 0, 0, 0);
+    return midnight;
+  }
+
+  tick = () => {
+    const nowInit = new Date();
     this.setState(
       (prevState) => ({
         now: nowInit,
-        midnight: new Date(nowInit.getFullYear(), nowInit.getMonth(),
-          nowInit.getDate() + 1, 0, 0, 0, 0),
-        counter: prevState.counter + 1
+        midnight: this.getMidnight(),
+        count: prevState.count + 1
       })
     );
   }
 
   componentDidMount() {
-    this.fastCount = setInterval(
-      () => this.tick(),
+    this.keepTicking = setInterval(
+      this.tick,
       1000
-    );
-    this.slowCount = setInterval(
-      () => this.setState(
-        (prevState) => ({
-          counter2: prevState.counter2 + 10
-        })
-      ),
-      10000
     );
   }
 
   componentWillUnmount() {
-    clearInterval(this.fastCount);
-    clearInterval(this.slowCount);
+    clearInterval(this.keepTicking);
   }
 
   render() {
@@ -128,8 +141,8 @@ class Timer extends React.Component {
       <div className="App-intro">
         <p>Countdown till blast-off!</p>
         <h1>{displayDiff(getDiff(this.state.now, this.state.midnight))}</h1>
-        <h3>Count Fast: {this.state.counter}</h3>
-        <h3>Count Slow: {this.state.counter2}</h3>
+        <Counter count={this.state.count} interval={1} />
+        <Counter count={this.state.count} interval={10} />
       </div>
     );
   }
