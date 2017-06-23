@@ -255,7 +255,7 @@ class LoginDialog extends React.Component {
     let content = null;
     let message = null;
     if (this.state.hasFailed) {
-      message = <p>Get out!</p>;
+      message = <p>Not allowed in here!</p>;
     }
     if (!this.state.loggedIn) {
       content = (
