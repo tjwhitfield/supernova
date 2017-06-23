@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
 
@@ -46,6 +47,11 @@ class Response extends React.Component {
   }
 }
 
+Response.propTypes = {
+  tentative: PropTypes.bool.isRequired,
+  deadline: PropTypes.string.isRequired
+};
+
 function Boss(first, last) {
   return (
     {
@@ -77,6 +83,18 @@ class Issue extends React.Component {
   }
 }
 
+Issue.propTypes = {
+  boss: PropTypes.object.isRequired,
+  tentative: PropTypes.bool.isRequired,
+  deadline: PropTypes.string.isRequired,
+  happy: PropTypes.bool.isRequired
+};
+
+Issue.defaultProps = {
+  tentative: true,
+  happy: true
+};
+
 class Counter extends React.Component {
 
   getCountToDisplay = () => {
@@ -94,6 +112,11 @@ class Counter extends React.Component {
     return content;
   }
 }
+
+Counter.propTypes = {
+  count: PropTypes.number.isRequired,
+  interval: PropTypes.number.isRequired
+};
 
 class Timer extends React.Component {
 
@@ -171,6 +194,10 @@ class NumberList extends React.Component {
   }
 }
 
+NumberList.propTypes = {
+  interval: PropTypes.number.isRequired
+};
+
 class Unprotected extends React.Component {
 
   render() {
@@ -191,7 +218,7 @@ class Protected extends React.Component {
         <Timer />
         <Message name="Jorgensen" />
         <Issue boss={Boss("George", "Hill")} instigator="Bobby" victim="Michael"
-          tentative={true} deadline="Friday" happy={true} />
+          deadline="Friday" />
         <NumberList interval={2} />
       </div>
     );
@@ -288,6 +315,10 @@ class LoginDialog extends React.Component {
   }
 }
 
+LoginDialog.propTypes = {
+  authResultHandler: PropTypes.func.isRequired
+};
+
 class Auth extends React.Component {
 
   handleClick = () => {
@@ -310,6 +341,11 @@ class Auth extends React.Component {
     return content;
   }
 }
+
+Auth.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
+  handleClick: PropTypes.func.isRequired
+};
 
 class App extends Component {
 
